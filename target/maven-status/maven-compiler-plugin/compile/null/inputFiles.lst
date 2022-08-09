@@ -1,5 +1,8 @@
+/Volumes/WorkALearn/GIT/quarkus-rest-api/src/main/java/vn/hung/itc/dto/DepartmentDto.java
+/Volumes/WorkALearn/GIT/quarkus-rest-api/src/main/java/vn/hung/itc/entity/Department.java
 /Volumes/WorkALearn/GIT/quarkus-rest-api/src/main/java/vn/hung/itc/entity/User.java
-/Volumes/WorkALearn/GIT/quarkus-rest-api/src/main/java/vn/hung/itc/service/UserService.java
+/Volumes/WorkALearn/GIT/quarkus-rest-api/src/main/java/vn/hung/itc/resource/DepartmetResource.java
 /Volumes/WorkALearn/GIT/quarkus-rest-api/src/main/java/vn/hung/itc/resource/UserRepository.java
 /Volumes/WorkALearn/GIT/quarkus-rest-api/src/main/java/vn/hung/itc/resource/UserResource.java
 /Volumes/WorkALearn/GIT/quarkus-rest-api/src/main/java/vn/hung/itc/dto/UserDto.java
+/Volumes/WorkALearn/GIT/quarkus-rest-api/src/main/java/vn/hung/itc/resource/DepartmentRepository.java

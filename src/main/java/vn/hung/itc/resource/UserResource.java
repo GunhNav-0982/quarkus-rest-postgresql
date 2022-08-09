@@ -2,16 +2,28 @@ package vn.hung.itc.resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.netty.util.internal.StringUtil;
 import io.quarkus.panache.common.Sort;
 import org.jboss.logging.Logger;
 import org.modelmapper.ModelMapper;
+import vn.hung.itc.dto.DepartmentDto;
 import vn.hung.itc.dto.UserDto;
+import vn.hung.itc.entity.Department;
 import vn.hung.itc.entity.User;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -26,14 +38,18 @@ public class UserResource {
 
     private static final Logger log = Logger.getLogger(UserResource.class.getName());
 
-    @Inject
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final DepartmentRepository departmentRepository;
 
     ModelMapper modelMapper = new ModelMapper();
-
+    @Inject
+    public UserResource(UserRepository userRepository, DepartmentRepository departmentRepository){
+        this.userRepository = userRepository;
+        this.departmentRepository = departmentRepository;
+    }
 
     @GET
-    public List<User> get() {
+    public List<User> getUser() {
         return userRepository.listAll(Sort.by("id"));
     }
 
@@ -49,12 +65,13 @@ public class UserResource {
 
     @POST
     @Transactional
-    public Response create(UserDto userDto) {
-        if (userDto.getId() != null) {
-            throw new WebApplicationException("Id was invalidly set on request.", 422);
+    public Response addUser(UserDto userDto) {
+        Department department = departmentRepository.findById(userDto.getDepartmentId());
+        if(department == null){
+            throw new WebApplicationException("Department with id of " + userDto.getDepartmentId() + " does not exist.", 404);
         }
-
         User user = modelMapper.map(userDto, User.class);
+        user.setDepartment(department);
         userRepository.persist(user);
         return Response.ok(user).status(201).build();
     }
@@ -90,6 +107,12 @@ public class UserResource {
         userRepository.delete(entity);
         return Response.status(204).build();
     }
+
+//    @GET
+//    public List<User> getUserInDepartment(@QueryParam("departmentId") Long departmentId){
+//        Department department = departmentRepository.findById(departmentId);
+//        return department.getListUser();
+//    }
 
     @Provider
     public static class ErrorMapper implements ExceptionMapper<Exception> {
